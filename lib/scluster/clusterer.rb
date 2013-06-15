@@ -4,7 +4,9 @@ module SCluster
     attr_accessor :points
 
     def initialize(points, max_distance)
-      @clusters = points.collect{ |p| Cluster.new([Point.new(p)]) }
+      points = points.group_by { |p| p[:val] }.values # premature optimization
+      @clusters = points.collect{ |point|
+        Cluster.new(point.collect{ |p| Point.new(p) }) }
       @max_distance = max_distance
     end
 
