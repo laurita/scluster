@@ -1,34 +1,38 @@
 require 'levenshtein'
 
+# Point.new({:group => "blah", :name => "121231 Mc Donald's", :val => "Mc Donalds"})
+
 module SCluster
 
   class Point
-    attr_accessor :name
+    attr_accessor :point
+    attr_accessor :val
 
-    def initialize(name)
-      @name = name
+    def initialize(point)
+      @point = point
+      @val = point[:val]
     end
 
     def length
-      return @name.length
+      return @val.length
     end
 
     def <=>(point)
-      cmp = @name <=> point.name
+      cmp = @val <=> point.val
       cmp = @object_id <=> point.object_id if cmp == 0
       return cmp
     end
 
     def distance_to(point)
-      dist = Levenshtein.distance(self.name, point.name)
-      weight = [self.name.length, point.name.length].max
+      dist = Levenshtein.distance(@val, point.val)
+      weight = [@val.length, point.val.length].max
       dist = dist / Float(weight)
 
       return dist
     end
 
     def to_s
-      "(#{name})"
+      "(#{point})"
     end
   end
 

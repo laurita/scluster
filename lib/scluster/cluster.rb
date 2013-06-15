@@ -24,7 +24,7 @@ module SCluster
     end
 
     def to_a
-      return @points.collect { |p| p.name }
+      return @points.collect { |p| p.point }
     end
   end
 
