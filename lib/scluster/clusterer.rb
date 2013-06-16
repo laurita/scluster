@@ -4,12 +4,16 @@ module SCluster
     attr_accessor :points
 
     def initialize(points, max_distance)
-      points = points.group_by { |p| p[:val] }.values # premature optimization
+      # Preclustering optimization: gathers all the points
+      # having the same (cleaned) name into one cluster.
+      points = points.group_by { |p| p[:val] }.values
       @clusters = points.collect{ |point|
         Cluster.new(point.collect{ |p| Point.new(p) }) }
       @max_distance = max_distance
     end
 
+    # Merges the two closest clusters until the smallest
+    # distance is not bigger that the given threshold.
     def cluster
       closest_distance = 0
       while closest_distance < @max_distance
@@ -21,6 +25,9 @@ module SCluster
       end
     end
 
+    # Finds two clusters having the smallest distance.
+    # * *Returns* :
+    #   - distance, and the two closest clusters
     def find_closest_distance
       closest_distance = 1
       closest_clusters = [nil, nil]
@@ -36,6 +43,12 @@ module SCluster
       return closest_distance, closest_clusters[0], closest_clusters[1]
     end
 
+    # Merges two clusters.
+    # * *Args*    :
+    #   - +c1+    -> Cluster instance
+    #   - +c2+    -> Cluster instance
+    # * *Returns* :
+    #   - one merged cluster
     def merge(c1, c2)
       clusters = @clusters.dup
       @clusters = clusters - [c1, c2] + [c1.merge(c2)]

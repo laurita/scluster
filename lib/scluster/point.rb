@@ -23,6 +23,15 @@ module SCluster
       return cmp
     end
 
+    # Calculates Levenshtein distance between two points,
+    # weighted by the length of the longer string.
+    # Levenshtein distance is string edit distance - the
+    # number of string edit operations to make two strings equal.
+    # * *Args*    :
+    #   - +point+ -> Point instance having string in
+    #                :val
+    # * *Returns* :
+    #   - Float distance in [0, 1] range 
     def distance_to(point)
       dist = Levenshtein.distance(@val, point.val)
       weight = [@val.length, point.val.length].max
